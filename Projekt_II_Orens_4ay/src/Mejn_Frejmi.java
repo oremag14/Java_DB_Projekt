@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -25,6 +27,11 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
     
     private Connection con = null;
     DatabaseMetaData d = null;
+    OurTableModel tableModel=null;
+    int primPos;
+    String primary_key;
+    int ComboBoxIndex=0;
+
     
     public Mejn_Frejmi() {
         initComponents();
@@ -135,7 +142,11 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
             }
         });
 
-        ComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        ComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ComboBoxActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -264,6 +275,8 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
     }//GEN-LAST:event_Text_DatabaseActionPerformed
 
     private void Disconnection_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Disconnection_ButtonActionPerformed
+            
+        ComboBox.removeAllItems();
         try {
             con.close();
             Text_Server.setEnabled(true);
@@ -284,6 +297,47 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
         
         
     }//GEN-LAST:event_Disconnection_ButtonActionPerformed
+
+    private void ComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboBoxActionPerformed
+        if(ComboBox.getSelectedItem()!=null){
+            try {
+                cmbBoxIndex=ComboBox.getSelectedIndex();
+                d=con.getMetaData();
+                ResultSet rs =d.getColumns(null, null, ComboBox.getItemAt(ComboBoxIndex).toString(), null);
+                ResultSet primaryKey=d.getPrimaryKeys(null, null, "city");
+                primaryKey.next();
+                primPos=primaryKey.getInt("KEY_SEQ");
+                primary_key=primaryKey.getString(4);
+                System.out.println(primPos);
+                tableModel=new OurTableModel(primPos-1);
+                int num_cols=0;
+                while(rs.next()){
+                    tableModel.addColumn(rs.getString(4));
+                    System.out.println(rs.getString(4));
+                    num_cols++;
+                }
+               
+                Table.setModel(tableModel);
+
+                Statement stm=con.createStatement();
+                rs=stm.executeQuery("select * from "+ComboBox.getItemAt(ComboBoxIndex));
+                while(rs.next()){
+                    Object[] arr= new Object[num_cols];
+                    for(int i=0;i<num_cols;i++){
+                        arr[i]=rs.getObject(i+1);
+                    }
+                    tableModel.addRow(arr);
+                }
+
+                tableModel.addRow(new Object[num_cols]);
+                Table.setModel(tableModel);
+
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(Mejn_Frejmi.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_ComboBoxActionPerformed
 
     private void cbxTablesActionPerformed(java.awt.event.ActionEvent evt) {                                          
         int num_columns = 0;
