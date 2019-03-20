@@ -2,6 +2,7 @@
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -73,6 +74,8 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
         Text_Password = new javax.swing.JTextField();
         Text_Database = new javax.swing.JTextField();
         ComboBox = new javax.swing.JComboBox<>();
+        delete_button = new javax.swing.JButton();
+        Label_Database1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -148,34 +151,52 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
             }
         });
 
+        delete_button.setText("Delete");
+        delete_button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                delete_buttonActionPerformed(evt);
+            }
+        });
+
+        Label_Database1.setText("Table");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(Label_Server)
-                    .addComponent(Port_Label)
-                    .addComponent(Label_User)
-                    .addComponent(Label_Password)
-                    .addComponent(Label_Database))
-                .addGap(30, 30, 30)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(Text_Database)
-                    .addComponent(Text_Password)
-                    .addComponent(Text_User)
-                    .addComponent(Text_Port)
-                    .addComponent(Text_Server))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(Label_Server)
+                            .addComponent(Port_Label)
+                            .addComponent(Label_User)
+                            .addComponent(Label_Password)
+                            .addComponent(Label_Database))
+                        .addGap(30, 30, 30)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(Text_Database)
+                            .addComponent(Text_Password)
+                            .addComponent(Text_User)
+                            .addComponent(Text_Port)
+                            .addComponent(Text_Server))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(Label_Database1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(ComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(39, 39, 39)
+                        .addComponent(delete_button)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(Connection_Button)
-                        .addGap(36, 36, 36)
-                        .addComponent(Disconnection_Button))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(Connection_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(343, 343, 343)
+                        .addComponent(Disconnection_Button)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -203,13 +224,16 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(Label_Database)
                             .addComponent(Text_Database, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(23, 23, 23)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Connection_Button)
-                    .addComponent(Disconnection_Button)
-                    .addComponent(ComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .addComponent(ComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Label_Database1)
+                    .addComponent(delete_button)
+                    .addComponent(Connection_Button))
+                .addGap(29, 29, 29)
+                .addComponent(Disconnection_Button)
+                .addContainerGap(43, Short.MAX_VALUE))
         );
 
         pack();
@@ -303,34 +327,43 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
             try {
                 ComboBoxIndex=ComboBox.getSelectedIndex();
                 d=con.getMetaData();
-                ResultSet rs =d.getColumns(null, null, ComboBox.getItemAt(ComboBoxIndex).toString(), null);
-                ResultSet primaryKey=d.getPrimaryKeys(null, null, "city");
+                ResultSet res =d.getColumns(null, null, ComboBox.getItemAt(ComboBoxIndex).toString(), null);
+                ResultSet primaryKey=d.getPrimaryKeys(null, null, ComboBox.getItemAt(ComboBoxIndex));
                 primaryKey.next();
                 primPos=primaryKey.getInt("KEY_SEQ");
                 primary_key=primaryKey.getString(4);
                 System.out.println(primPos);
                 tableModel=new OurTableModel(primPos-1);
                 int num_cols=0;
-                while(rs.next()){
-                    tableModel.addColumn(rs.getString(4));
-                    System.out.println(rs.getString(4));
+                while(res.next()){
+                    tableModel.addColumn(res.getString(4));
+                    System.out.println(res.getString(4));
                     num_cols++;
                 }
                
                 Table.setModel(tableModel);
 
                 Statement stm=con.createStatement();
-                rs=stm.executeQuery("select * from "+ComboBox.getItemAt(ComboBoxIndex));
-                while(rs.next()){
+                res=stm.executeQuery("select * from "+ComboBox.getItemAt(ComboBoxIndex));
+                while(res.next()){
                     Object[] arr= new Object[num_cols];
                     for(int i=0;i<num_cols;i++){
-                        arr[i]=rs.getObject(i+1);
+                        arr[i]=res.getObject(i+1);
                     }
                     tableModel.addRow(arr);
                 }
 
                 tableModel.addRow(new Object[num_cols]);
                 Table.setModel(tableModel);
+                
+                tableModel.addTableModelListener(new TableModelListener(){
+
+                    @Override
+                    public void tableChanged(TableModelEvent e) {
+                        tblChanged(e);
+                    }
+
+                });
 
                 
             } catch (SQLException ex) {
@@ -338,6 +371,10 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_ComboBoxActionPerformed
+
+    private void delete_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delete_buttonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_delete_buttonActionPerformed
 
     private void cbxTablesActionPerformed(java.awt.event.ActionEvent evt) {                                          
         int num_columns = 0;
@@ -389,7 +426,30 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
         }
 
 
-    }                                         
+    }    
+    private void tblChanged(TableModelEvent e){
+        int row=e.getFirstRow();
+        String columnName=Table.getModel().getColumnName(e.getColumn());
+        if(row!=Table.getModel().getRowCount()-1){
+            String id=Table.getModel().getValueAt(row, primPos-1).toString();
+            System.out.println(columnName+row+id);
+            String value=Table.getModel().getValueAt(row,e.getColumn()).toString();
+
+            try {
+                PreparedStatement update=con.prepareStatement("update " +ComboBox.getItemAt(ComboBoxIndex)+ " set "+columnName+"=? where "+primary_key+"=?");
+
+                update.setString(1, value);
+                update.setString(2, ""+id);
+                System.out.println(update.toString());
+                update.executeUpdate();
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(Mejn_Frejmi.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -430,6 +490,7 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
     private javax.swing.JButton Connection_Button;
     private javax.swing.JButton Disconnection_Button;
     private javax.swing.JLabel Label_Database;
+    private javax.swing.JLabel Label_Database1;
     private javax.swing.JLabel Label_Password;
     private javax.swing.JLabel Label_Server;
     private javax.swing.JLabel Label_User;
@@ -440,6 +501,7 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
     private javax.swing.JTextField Text_Port;
     private javax.swing.JTextField Text_Server;
     private javax.swing.JTextField Text_User;
+    private javax.swing.JButton delete_button;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }
