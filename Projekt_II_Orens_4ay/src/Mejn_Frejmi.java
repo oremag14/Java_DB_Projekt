@@ -301,7 +301,7 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
     private void ComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboBoxActionPerformed
         if(ComboBox.getSelectedItem()!=null){
             try {
-                cmbBoxIndex=ComboBox.getSelectedIndex();
+                ComboBoxIndex=ComboBox.getSelectedIndex();
                 d=con.getMetaData();
                 ResultSet rs =d.getColumns(null, null, ComboBox.getItemAt(ComboBoxIndex).toString(), null);
                 ResultSet primaryKey=d.getPrimaryKeys(null, null, "city");
