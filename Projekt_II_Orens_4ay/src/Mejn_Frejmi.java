@@ -27,7 +27,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Mejn_Frejmi extends javax.swing.JFrame {
 
-    
+    //Globale Variablen die ich in mehrere methoden verwenden will.
     private Connection con = null;
     DatabaseMetaData d = null;
     OurTableModel tableModel=null;
@@ -243,6 +243,9 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
 
     private void Connection_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Connection_ButtonActionPerformed
        
+        //Diese Methode macht die Verbindung mit der Daten Bank
+
+        //Hier speichere ich die Werte die ich auf mein JDBC link verwenden werde,
         String server = Text_Server.getText();
         int port = Integer.parseInt(Text_Port.getText());
         String database = Text_Database.getText();
@@ -252,7 +255,7 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
         
         
         try {
-            con = DriverManager.getConnection("jdbc:mysql://" + server + ":" + port + "/" + database, user, password);
+            con = DriverManager.getConnection("jdbc:mysql://" + server + ":" + port + "/" + database, user, password); //JDBC link mit die obere Variablen
             Text_Server.setEnabled(false);
             Text_Port.setEnabled(false);
             Text_Database.setEnabled(false);
@@ -262,6 +265,7 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
             Connection_Button.setEnabled(false);
             Disconnection_Button.setEnabled(true);
             jScrollPane1.setEnabled(true);
+            //Verfuegbarkeit der andere Buttons wenn ich auf "Connect" druecke. 
         } catch (SQLException ex) {
             System.out.println("Could not connect to the database!");
             javax.swing.JOptionPane.showMessageDialog(this, "Could not connect to the  Server");
@@ -271,7 +275,6 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
             ResultSet res = d.getTables(null, null, null, null);
             while (res.next()) {
                 ComboBox.addItem(res.getString(3));
-                //System.out.println(rs.getString(3));
             }
         } catch (SQLException ex) {
             System.out.println("Could not getdatabase data");
@@ -302,7 +305,7 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
 
     private void Disconnection_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Disconnection_ButtonActionPerformed
             
-        ComboBox.removeAllItems();
+        ComboBox.removeAllItems(); //Die Tabelle entleeren.
         try {
             con.close();
             Text_Server.setEnabled(true);
@@ -344,7 +347,6 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
                 }
                
                 Table.setModel(tableModel);
-
                 Statement stm=con.createStatement();
                 res=stm.executeQuery("select * from "+ComboBox.getItemAt(ComboBoxIndex));
                 while(res.next()){
@@ -357,15 +359,14 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
 
                 tableModel.addRow(new Object[num_cols]);
                 Table.setModel(tableModel);
-                
                 tableModel.addTableModelListener(new TableModelListener(){
 
                     @Override
                     public void tableChanged(TableModelEvent e) {
                         tblChanged(e);
                     }
-
-                });
+                }
+                );
 
                 
             } catch (SQLException ex) {
@@ -375,13 +376,13 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
     }//GEN-LAST:event_ComboBoxActionPerformed
 
     private void delete_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delete_buttonActionPerformed
-        int row=Table.getSelectedRow();
+        int row=Table.getSelectedRow();//Eine Reihe selektieren.
         
         if(row!=Table.getModel().getRowCount()-1){
             int id=Integer.parseInt(Table.getModel().getValueAt(row, primPos-1).toString());
             try {
                 PreparedStatement delete=con.prepareStatement("delete from "+ComboBox.getItemAt(ComboBoxIndex)+ " where "+primary_key+"=?");
-
+                
                 delete.setInt(1, id);
                 delete.executeUpdate();
                 tableModel.removeRow(row);
@@ -457,7 +458,7 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
                 update.setString(1, value);
                 update.setString(2, ""+id);
                 System.out.println(update.toString());
-                update.executeUpdate();
+                update.executeUpdate();//Update durchfuehren.
                 
             } catch (SQLException ex) {
                 Logger.getLogger(Mejn_Frejmi.class.getName()).log(Level.SEVERE, null, ex);
@@ -487,7 +488,7 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
         } catch (UnsupportedLookAndFeelException ex) {
             Logger.getLogger(Mejn_Frejmi.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        //Auf jedes Betriebsystem schaut die Fenster anders.
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
