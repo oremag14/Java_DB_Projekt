@@ -373,7 +373,21 @@ public class Mejn_Frejmi extends javax.swing.JFrame {
     }//GEN-LAST:event_ComboBoxActionPerformed
 
     private void delete_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delete_buttonActionPerformed
-        // TODO add your handling code here:
+        int row=Table.getSelectedRow();
+        
+        if(row!=Table.getModel().getRowCount()-1){
+            int id=Integer.parseInt(Table.getModel().getValueAt(row, primPos-1).toString());
+            try {
+                PreparedStatement delete=con.prepareStatement("delete from "+ComboBox.getItemAt(ComboBoxIndex)+ " where "+primary_key+"=?");
+
+                delete.setInt(1, id);
+                delete.executeUpdate();
+                tableModel.removeRow(row);
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(Mejn_Frejmi.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }//GEN-LAST:event_delete_buttonActionPerformed
 
     private void cbxTablesActionPerformed(java.awt.event.ActionEvent evt) {                                          
